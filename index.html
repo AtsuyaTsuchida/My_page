@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atsuya | Portfolio</title>
+    <meta
+      name="description"
+      content="Atsuyaの制作実績をまとめたポートフォリオサイトです。"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="bg-shape shape-1" aria-hidden="true"></div>
+    <div class="bg-shape shape-2" aria-hidden="true"></div>
+
+    <header class="site-header">
+      <a href="#" class="logo">ATSUYA</a>
+      <nav>
+        <a href="#about">About</a>
+        <a href="#works">Works</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero reveal" id="top">
+        <p class="hero-label">PORTFOLIO 2026</p>
+        <h1>
+          Design and Codeに、
+          <span>少しの遊び心。</span>
+        </h1>
+        <p class="hero-text">
+          Web制作を中心に、見た目の心地よさと使いやすさを両立したプロダクトを作っています。
+        </p>
+        <a class="hero-cta" href="#works">作品を見る</a>
+      </section>
+
+      <section class="about reveal" id="about">
+        <h2>About</h2>
+        <p>
+          Atsuya / Frontend Developer。HTML, CSS, JavaScriptを軸に、
+          コンセプトのあるUIと軽快な実装を得意としています。目的に対して最適な構成を選び、
+          伝わるデザインに落とし込みます。
+        </p>
+      </section>
+
+      <section class="works" id="works">
+        <div class="section-head reveal">
+          <h2>Works</h2>
+          <p>最近の制作から、代表的なものをピックアップしました。</p>
+        </div>
+
+        <div class="work-grid">
+          <article class="work-card reveal">
+            <div class="work-thumb grad-1" aria-hidden="true"></div>
+            <div class="work-body">
+              <h3>Urban Coffee Landing</h3>
+              <p>
+                コーヒーショップ向けLP。ブランドの雰囲気を活かした配色と、
+                CTAの導線設計を重視。
+              </p>
+              <ul>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>GSAP</li>
+              </ul>
+              <a href="#" aria-label="Urban Coffee Landingを開く">View Project</a>
+            </div>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-thumb grad-2" aria-hidden="true"></div>
+            <div class="work-body">
+              <h3>Fitness App UI</h3>
+              <p>
+                トレーニング記録アプリのUI設計。モバイルファーストで、
+                情報の優先順位を整理。
+              </p>
+              <ul>
+                <li>Figma</li>
+                <li>React</li>
+                <li>TypeScript</li>
+              </ul>
+              <a href="#" aria-label="Fitness App UIを開く">View Project</a>
+            </div>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-thumb grad-3" aria-hidden="true"></div>
+            <div class="work-body">
+              <h3>Travel Journal Blog</h3>
+              <p>
+                旅ブログのフロント実装。記事一覧の可読性と、
+                読了体験を意識したタイポグラフィを設計。
+              </p>
+              <ul>
+                <li>Next.js</li>
+                <li>MDX</li>
+                <li>Vercel</li>
+              </ul>
+              <a href="#" aria-label="Travel Journal Blogを開く">View Project</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="contact reveal" id="contact">
+        <h2>Contact</h2>
+        <p>お仕事のご相談はメールまたはSNSからお気軽にどうぞ。</p>
+        <div class="contact-links">
+          <a href="mailto:yourname@example.com">yourname@example.com</a>
+          <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://x.com/" target="_blank" rel="noreferrer">X</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <small>© 2026 Atsuya Portfolio</small>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
