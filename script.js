@@ -2,7 +2,7 @@ document.documentElement.classList.add('js');
 
 function enforceVersionedWorkPageUrls() {
   const version = 'stable20260305';
-  const targets = new Set(['work-urban-coffee.html', 'work-10.html']);
+  const targets = new Set(['gravitation.html', 'uchusen-kansoku-sparklers.html']);
 
   // Normalize current URL for pages that were known to restore stale snapshots.
   const current = window.location.pathname.split('/').pop() || '';
