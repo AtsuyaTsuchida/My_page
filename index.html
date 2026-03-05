@@ -3,7 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Atsuya | Portfolio</title>
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>ATSUYA TSUCHIDA</title>
     <meta
       name="description"
       content="Atsuyaの制作実績をまとめたポートフォリオサイトです。"
@@ -11,121 +14,170 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style-main-20260305.css?v=3" />
   </head>
   <body>
-    <div class="bg-shape shape-1" aria-hidden="true"></div>
-    <div class="bg-shape shape-2" aria-hidden="true"></div>
-
     <header class="site-header">
-      <a href="#" class="logo">ATSUYA</a>
+      <a href="index.html" class="logo">ATSUYA TSUCHIDA</a>
       <nav>
-        <a href="#about">About</a>
-        <a href="#works">Works</a>
-        <a href="#contact">Contact</a>
+        <div class="nav-works">
+          <a href="index.html" class="active">WORKS</a>
+          <div class="works-dropdown">
+            <a href="work-urban-coffee.html">Gravitation</a>
+            <a href="work-fitness-app.html">UNLABELED</a>
+            <a href="work-08.html">「続・創るためのAI」#5 Key Visual</a>
+            <a href="work-travel-journal.html">Beyond2045_VJ</a>
+            <a href="work-04.html">A/V Performance@sazareba</a>
+            <a href="work-05.html">transcriptions</a>
+            <a href="work-06.html">Cannon</a>
+            <a href="work-07.html">Reservoir Drum Machine Audio Visual Performances</a>
+            <a href="work-09.html">Audio-Visual for Reaction-Diffusion</a>
+            <a href="work-10.html">宇宙線観測 / sparklers</a>
+          </div>
+        </div>
+        <a href="about.html">ABOUT</a>
+        <a href="contact.html">CONTACT</a>
       </nav>
     </header>
 
     <main>
-      <section class="hero reveal" id="top">
-        <p class="hero-label">PORTFOLIO 2026</p>
-        <h1>
-          Design and Codeに、
-          <span>少しの遊び心。</span>
-        </h1>
-        <p class="hero-text">
-          Web制作を中心に、見た目の心地よさと使いやすさを両立したプロダクトを作っています。
-        </p>
-        <a class="hero-cta" href="#works">作品を見る</a>
-      </section>
-
-      <section class="about reveal" id="about">
-        <h2>About</h2>
-        <p>
-          Atsuya / Frontend Developer。HTML, CSS, JavaScriptを軸に、
-          コンセプトのあるUIと軽快な実装を得意としています。目的に対して最適な構成を選び、
-          伝わるデザインに落とし込みます。
-        </p>
-      </section>
-
       <section class="works" id="works">
         <div class="section-head reveal">
           <h2>Works</h2>
-          <p>最近の制作から、代表的なものをピックアップしました。</p>
         </div>
 
-        <div class="work-grid">
-          <article class="work-card reveal">
-            <div class="work-thumb grad-1" aria-hidden="true"></div>
-            <div class="work-body">
-              <h3>Urban Coffee Landing</h3>
-              <p>
-                コーヒーショップ向けLP。ブランドの雰囲気を活かした配色と、
-                CTAの導線設計を重視。
-              </p>
-              <ul>
-                <li>HTML</li>
-                <li>CSS</li>
-                <li>GSAP</li>
-              </ul>
-              <a href="#" aria-label="Urban Coffee Landingを開く">View Project</a>
-            </div>
+        <div class="work-grid reveal">
+          <article class="work-card">
+            <a class="work-link" href="work-urban-coffee.html" aria-label="Gravitationを開く">
+              <img
+                class="work-thumb"
+                src="assets/gravitation.jpg"
+                alt="Gravitation のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">Gravitation</span>
+            </a>
           </article>
 
-          <article class="work-card reveal">
-            <div class="work-thumb grad-2" aria-hidden="true"></div>
-            <div class="work-body">
-              <h3>Fitness App UI</h3>
-              <p>
-                トレーニング記録アプリのUI設計。モバイルファーストで、
-                情報の優先順位を整理。
-              </p>
-              <ul>
-                <li>Figma</li>
-                <li>React</li>
-                <li>TypeScript</li>
-              </ul>
-              <a href="#" aria-label="Fitness App UIを開く">View Project</a>
-            </div>
+          <article class="work-card">
+            <a class="work-link" href="work-fitness-app.html" aria-label="UNLABELEDを開く">
+              <img
+                class="work-thumb"
+                src="assets/unlabeled.jpg"
+                alt="UNLABELED のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">UNLABELED</span>
+            </a>
           </article>
 
-          <article class="work-card reveal">
-            <div class="work-thumb grad-3" aria-hidden="true"></div>
-            <div class="work-body">
-              <h3>Travel Journal Blog</h3>
-              <p>
-                旅ブログのフロント実装。記事一覧の可読性と、
-                読了体験を意識したタイポグラフィを設計。
-              </p>
-              <ul>
-                <li>Next.js</li>
-                <li>MDX</li>
-                <li>Vercel</li>
-              </ul>
-              <a href="#" aria-label="Travel Journal Blogを開く">View Project</a>
-            </div>
+          <article class="work-card">
+            <a class="work-link" href="work-08.html" aria-label="「続・創るためのAI」#5 Key Visualを開く">
+              <img
+                class="work-thumb"
+                src="assets/wired.png"
+                alt="「続・創るためのAI」#5 Key Visual のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">「続・創るためのAI」#5 Key Visual</span>
+            </a>
+          </article>
+
+          <article class="work-card">
+            <a class="work-link" href="work-travel-journal.html" aria-label="Beyond2045_VJを開く">
+              <img
+                class="work-thumb"
+                src="assets/beyond2045.png"
+                alt="Beyond2045_VJ のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">Beyond2045_VJ</span>
+            </a>
+          </article>
+
+          <article class="work-card">
+            <a class="work-link" href="work-04.html" aria-label="A/V Performance@sazarebaを開く">
+              <img
+                class="work-thumb"
+                src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1800&q=80"
+                alt="A/V Performance@sazareba のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">A/V Performance@sazareba</span>
+            </a>
+          </article>
+
+          <article class="work-card">
+            <a class="work-link" href="work-05.html" aria-label="transcriptionsを開く">
+              <img
+                class="work-thumb"
+                src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1800&q=80"
+                alt="transcriptions のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">transcriptions</span>
+            </a>
+          </article>
+
+          <article class="work-card">
+            <a class="work-link" href="work-06.html" aria-label="Cannonを開く">
+              <img
+                class="work-thumb"
+                src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1800&q=80"
+                alt="Cannon のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">Cannon</span>
+            </a>
+          </article>
+
+          <article class="work-card">
+            <a class="work-link" href="work-07.html" aria-label="Reservoir Drum Machine Audio Visual Performancesを開く">
+              <img
+                class="work-thumb"
+                src="https://images.unsplash.com/photo-1484417894907-623942c8ee29?auto=format&fit=crop&w=1800&q=80"
+                alt="Reservoir Drum Machine Audio Visual Performances のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">Reservoir Drum Machine Audio Visual Performances</span>
+            </a>
+          </article>
+
+          <article class="work-card">
+            <a class="work-link" href="work-09.html" aria-label="Audio-Visual for Reaction-Diffusionを開く">
+              <img
+                class="work-thumb"
+                src="https://images.unsplash.com/photo-1487017159836-4e23ece2e4cf?auto=format&fit=crop&w=1800&q=80"
+                alt="Audio-Visual for Reaction-Diffusion のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">Audio-Visual for Reaction-Diffusion</span>
+            </a>
+          </article>
+
+          <article class="work-card">
+            <a class="work-link" href="work-10.html" aria-label="宇宙線観測 / sparklersを開く">
+              <img
+                class="work-thumb"
+                src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1800&q=80"
+                alt="宇宙線観測 / sparklers のスクリーンショット"
+                loading="lazy"
+              />
+              <span class="work-title">宇宙線観測 / sparklers</span>
+            </a>
           </article>
         </div>
       </section>
 
-      <section class="contact reveal" id="contact">
-        <h2>Contact</h2>
-        <p>お仕事のご相談はメールまたはSNSからお気軽にどうぞ。</p>
-        <div class="contact-links">
-          <a href="mailto:yourname@example.com">yourname@example.com</a>
-          <a href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-          <a href="https://x.com/" target="_blank" rel="noreferrer">X</a>
-        </div>
-      </section>
     </main>
 
     <footer>
-      <small>© 2026 Atsuya Portfolio</small>
+      <small>© 2026 Atsuya Tsuchida</small>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=46"></script>
   </body>
 </html>
