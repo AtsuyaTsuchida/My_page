@@ -14,7 +14,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style-main-20260305.css?v=3" />
+    <link rel="stylesheet" href="style-main-20260305.css?v=17" />
   </head>
   <body class="work-page">
 
@@ -38,13 +38,59 @@
         </div>
         <a href="about.html">ABOUT</a>
         <a href="contact.html">CONTACT</a>
+        <a href="https://www.instagram.com/atchannnnn/" target="_blank" rel="noreferrer" class="nav-instagram">Instagram</a>
       </nav>
     </header>
 
     <main>
       <section class="about reveal" id="work">
         <h2>Audio-Visual for Reaction-Diffusion</h2>
-        <p>Project page.</p>
+        <article class="work-detail gravitation-detail">
+          <p class="work-meta">Audio Visual Performance / 2024</p>
+
+          <figure class="work-hero">
+            <img src="assets/reaction-diffusion.png" alt="Audio-Visual for Reaction-Diffusion project image" />
+          </figure>
+
+          <section class="work-block">
+            <h3>Overview</h3>
+            <div class="work-copy">
+              <ul class="work-list overview-list">
+                <li>Artist: Atsuya Tsuchida</li>
+                <li>Format: Audio Visual Performance</li>
+                <li>Year: 2024</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="work-block">
+            <h3>Concept</h3>
+            <div class="work-copy">
+              <p class="work-lead">　反応拡散系とは、物質がお互いに変化し合うような化学反応と、空間全体に広がる拡散の2つの要因によって変化する様子を数理モデル化したものである。反応拡散方程式をコンピュータで計算して出力した場合、画面上には非常に有機的かつ非線形な動きが映し出される。一方で、非常に計算負荷のかかる演算であるが故に、高速かつ複雑に記述する際にはGPUを用いたシェーダプログラミングが有効であり、インターネット上には多くのWebGLによるデモサイトが存在する。</p>
+              <p>　しかし、反応拡散系がデザインとして利用されるのはファッションや建築といったマテリアルであり、リアルタイムに変化していく様子が効果的に使われたアウトプットの例は少なく、先述したWebGLによるデモサイトもサイト上での出力以上の機能は見込めない。</p>
+              <p>　そこで、反応拡散系をシェーダを用いた独自ソフトウェアでシミュレーションし、その最も効果的な利用方法としてオーディオビジュアルパフォーマンスを行った。openFrameworksを用いて、反応拡散系のモデルであるGray-Scott、FitzHugh-Nagumo、Belousov-Zhabotinskyをそれぞれ自由にコントロールできるVJ用ソフトウェアを用意し、音に合わせてリアルタイムで操作した。</p>
+            </div>
+          </section>
+
+          <section class="work-block">
+            <h3>Tools</h3>
+            <div class="work-copy">
+              <ul class="work-list">
+                <li>openFrameworks + GLSL</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="work-block">
+            <h3>Exhibition</h3>
+            <div class="work-copy">
+              <ul class="work-list">
+                <li>2024ss Tatsuki Hayama Lab Final Presentation</li>
+                <li>＠慶應義塾大学SFC θ館</li>
+              </ul>
+            </div>
+          </section>
+        </article>
       </section>
     </main>
 
@@ -52,6 +98,6 @@
       <small>© 2026 Atsuya Tsuchida</small>
     </footer>
 
-    <script src="script.js?v=46"></script>
+    <script src="script.js?v=54"></script>
   </body>
 </html>

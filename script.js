@@ -317,21 +317,6 @@ function initTextScramble() {
 }
 
 function initLanguageSwitch() {
-  const translations = {
-    jp: {
-      aboutText:
-        'Atsuya / フロントエンドデベロッパー。HTML・CSS・JavaScriptを軸に、コンセプトのあるUIと軽快な実装を行います。目的に対して最適な構成を選び、伝わるデザインへ落とし込みます。',
-      contactText: 'お仕事のご相談はメールまたはSNSからお気軽にどうぞ。',
-      workPageBody: '作品ページ。',
-    },
-    en: {
-      aboutText:
-        'Atsuya / Frontend Developer. I build concept-driven interfaces with clean HTML, CSS, and JavaScript implementation. I choose the right structure for each goal and shape it into clear visual communication.',
-      contactText: 'For project inquiries, feel free to reach out by email or social media.',
-      workPageBody: 'Project page.',
-    },
-  };
-
   const body = document.body;
   if (!body) return;
 
@@ -348,22 +333,8 @@ function initLanguageSwitch() {
     body.appendChild(switchRoot);
   }
 
-  function setText(selector, value) {
-    const el = document.querySelector(selector);
-    if (el && typeof value === 'string') el.textContent = value;
-  }
-
   function setLang(lang) {
     const safeLang = lang === 'en' ? 'en' : 'jp';
-    const dict = translations[safeLang];
-    const isWorkPage = body.classList.contains('work-page');
-
-    if (!isWorkPage) {
-      setText('section.about p', dict.aboutText);
-      setText('section.contact p', dict.contactText);
-    } else {
-      setText('section.about p', dict.workPageBody);
-    }
 
     for (const btn of switchRoot.querySelectorAll('button')) {
       btn.classList.toggle('active', btn.getAttribute('data-lang') === safeLang);
@@ -395,36 +366,65 @@ function enforceCurrentDesign() {
   document.body.style.color = '#141517';
 }
 
-function initInstagramFab() {
-  if (document.querySelector('.ig-fab')) return;
-  const link = document.createElement('a');
-  link.className = 'ig-fab';
-  link.href = 'https://www.instagram.com/';
-  link.target = '_blank';
-  link.rel = 'noreferrer';
-  link.setAttribute('aria-label', 'Instagram');
-  link.innerHTML = `
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <rect x="3.6" y="3.6" width="16.8" height="16.8" rx="5.2" stroke="currentColor" stroke-width="1.8"></rect>
-      <circle cx="12" cy="12" r="4.1" stroke="currentColor" stroke-width="1.8"></circle>
-      <circle cx="17.4" cy="6.6" r="1.15" fill="currentColor"></circle>
-    </svg>
-  `;
-  document.body.appendChild(link);
+function removeLegacyPlaceholderText() {
+  const targetPattern = /Project page\.|作品ページ。/;
+
+  const candidates = document.querySelectorAll('p, div, span, li');
+  for (const el of candidates) {
+    const t = (el.textContent || '').trim();
+    if (!targetPattern.test(t)) continue;
+    if (el.children.length === 0) {
+      el.remove();
+    }
+  }
+
+  // Guard against stale bfcache text-node restores.
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const text = (node.nodeValue || '').trim();
+    if (targetPattern.test(text)) {
+      const parent = node.parentElement;
+      if (parent && parent.children.length === 0) {
+        parent.remove();
+      } else {
+        node.nodeValue = '';
+      }
+    }
+    node = walker.nextNode();
+  }
+}
+
+function startLegacyPlaceholderGuard() {
+  removeLegacyPlaceholderText();
+  window.setTimeout(removeLegacyPlaceholderText, 60);
+  window.setTimeout(removeLegacyPlaceholderText, 260);
+  window.setTimeout(removeLegacyPlaceholderText, 900);
+
+  const observer = new MutationObserver(() => {
+    removeLegacyPlaceholderText();
+  });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+  });
 }
 
 const redirectedForVersion = enforceVersionedWorkPageUrls();
+removeLegacyPlaceholderText();
 if (!redirectedForVersion) {
   initReveal();
   initShaderBackground();
   initTextScramble();
   initLanguageSwitch();
   enforceCurrentDesign();
-  initInstagramFab();
+  startLegacyPlaceholderGuard();
 }
 
 window.addEventListener('pageshow', (event) => {
   enforceCurrentDesign();
+  removeLegacyPlaceholderText();
   if (event.persisted) {
     window.location.reload();
   }
