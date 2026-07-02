@@ -425,10 +425,17 @@ main {
   color: rgba(20, 21, 23, 0.74);
 }
 
+.about-lead {
+  max-width: 760px;
+  margin: 0 0 30px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(20, 21, 23, 0.14);
+}
+
 .about-nameplate {
-  margin: 0 0 18px;
+  margin: 0 0 16px;
   display: grid;
-  gap: 3px;
+  gap: 4px;
 }
 
 .about-name-en,
@@ -439,43 +446,42 @@ main {
 }
 
 .about-name-en {
-  font-size: 40px;
-  line-height: 0.96;
-  letter-spacing: -0.028em;
+  font-size: 36px;
+  line-height: 0.95;
+  letter-spacing: -0.026em;
   font-weight: 500;
 }
 
 .about-name-ja {
-  font-size: 24px;
-  line-height: 1;
-  letter-spacing: -0.015em;
+  font-size: 19px;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
   font-weight: 400;
-  color: rgba(20, 21, 23, 0.8);
+  color: rgba(20, 21, 23, 0.68);
 }
 
 .about-intro {
-  margin: 0 0 26px;
-  max-width: 54ch;
-  font-size: 19px;
-  line-height: 1.72;
-  letter-spacing: -0.007em;
-  color: rgba(20, 21, 23, 0.8);
+  margin: 0;
+  max-width: 50ch;
+  font-size: 17px;
+  line-height: 1.74;
+  letter-spacing: -0.004em;
+  color: rgba(20, 21, 23, 0.74);
 }
 
 .about-content {
   display: grid;
-  gap: 30px;
-  max-width: 780px;
-  border-top: 1px solid rgba(20, 21, 23, 0.14);
-  padding-top: 22px;
+  gap: 28px;
+  max-width: 760px;
+  padding-top: 0;
 }
 
 .about-block h3 {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1.1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.012em;
   font-weight: 500;
   color: var(--ink);
 }
@@ -483,19 +489,19 @@ main {
 .about-block h4 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1;
-  letter-spacing: -0.005em;
+  letter-spacing: -0.003em;
   font-weight: 500;
-  color: rgba(20, 21, 23, 0.9);
+  color: rgba(20, 21, 23, 0.62);
 }
 
 .about-year {
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr);
-  column-gap: 22px;
+  grid-template-columns: 56px minmax(0, 1fr);
+  column-gap: 20px;
   align-items: start;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .about-list {
@@ -508,10 +514,10 @@ main {
 
 .about-list li {
   font-size: 15px;
-  line-height: 1.62;
+  line-height: 1.58;
   letter-spacing: -0.004em;
   color: rgba(20, 21, 23, 0.76);
-  max-width: 62ch;
+  max-width: 58ch;
 }
 
 .about-award-single-line {
@@ -653,38 +659,41 @@ footer small {
   }
 
   .about-name-en {
-    font-size: 26px;
+    font-size: 24px;
   }
 
   .about-name-ja {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .about-intro {
-    margin-bottom: 14px;
     max-width: none;
-    font-size: 16px;
-    line-height: 1.55;
+    font-size: 15px;
+    line-height: 1.58;
+  }
+
+  .about-lead {
+    margin-bottom: 18px;
+    padding-bottom: 14px;
   }
 
   .about-content {
-    padding-top: 14px;
     gap: 20px;
   }
 
   .about-block h3 {
-    font-size: 21px;
+    font-size: 20px;
     margin-bottom: 6px;
   }
 
   .about-block h4 {
-    font-size: 18px;
+    font-size: 16px;
     margin: 0;
   }
 
   .about-year {
     grid-template-columns: 1fr;
-    gap: 4px;
+    gap: 5px;
     margin-top: 10px;
   }
 
