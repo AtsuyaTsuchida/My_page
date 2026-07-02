@@ -1,34 +1,5 @@
 document.documentElement.classList.add('js');
 
-function enforceVersionedWorkPageUrls() {
-  const version = 'stable20260305';
-  const targets = new Set(['gravitation.html', 'uchusen-kansoku-sparklers.html']);
-
-  // Normalize current URL for pages that were known to restore stale snapshots.
-  const current = window.location.pathname.split('/').pop() || '';
-  if (targets.has(current)) {
-    const url = new URL(window.location.href);
-    if (url.searchParams.get('v') !== version) {
-      url.searchParams.set('v', version);
-      window.location.replace(url.toString());
-      return true;
-    }
-  }
-
-  // Keep links versioned so navigation always bypasses stale cache entries.
-  const anchors = document.querySelectorAll('a[href]');
-  for (const a of anchors) {
-    const href = a.getAttribute('href');
-    if (!href) continue;
-    if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('#')) continue;
-    const [path] = href.split('?');
-    if (!targets.has(path)) continue;
-    a.setAttribute('href', `${path}?v=${version}`);
-  }
-
-  return false;
-}
-
 function initReveal() {
   const revealEls = document.querySelectorAll('.reveal');
   if (!revealEls.length) return;
@@ -421,16 +392,13 @@ function startLegacyPlaceholderGuard() {
   });
 }
 
-const redirectedForVersion = enforceVersionedWorkPageUrls();
 removeLegacyPlaceholderText();
-if (!redirectedForVersion) {
-  initReveal();
-  initShaderBackground();
-  initTextScramble();
-  initLanguageSwitch();
-  enforceCurrentDesign();
-  startLegacyPlaceholderGuard();
-}
+initReveal();
+initShaderBackground();
+initTextScramble();
+initLanguageSwitch();
+enforceCurrentDesign();
+startLegacyPlaceholderGuard();
 
 window.addEventListener('pageshow', (event) => {
   enforceCurrentDesign();
