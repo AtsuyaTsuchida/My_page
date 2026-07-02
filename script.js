@@ -333,6 +333,15 @@ function initLanguageSwitch() {
     body.appendChild(switchRoot);
   }
 
+  function applyTranslations(lang) {
+    for (const el of document.querySelectorAll('[data-en]')) {
+      if (el.dataset.jpText === undefined) {
+        el.dataset.jpText = el.textContent;
+      }
+      el.textContent = lang === 'en' ? el.getAttribute('data-en') : el.dataset.jpText;
+    }
+  }
+
   function setLang(lang) {
     const safeLang = lang === 'en' ? 'en' : 'jp';
 
@@ -342,6 +351,7 @@ function initLanguageSwitch() {
 
     document.documentElement.lang = safeLang === 'jp' ? 'ja' : 'en';
     window.localStorage.setItem('siteLang', safeLang);
+    applyTranslations(safeLang);
   }
 
   switchRoot.addEventListener('click', (event) => {
