@@ -8,6 +8,8 @@
   --menu-top: 30px;
   --menu-width: 240px;
   --content-left-gap: 92px;
+  --content-pad: 24px;
+  --lang-gutter: 88px;
   --content-top: 30px;
   --content-max: 920px;
   --page-column: 860px;
@@ -215,7 +217,7 @@ main {
   margin-top: var(--content-top);
   margin-left: 0;
   margin-bottom: 84px;
-  padding: 0 24px;
+  padding: 0 var(--lang-gutter) 0 var(--content-pad);
 }
 
 .section-head h2,
@@ -228,6 +230,9 @@ main {
   letter-spacing: -0.035em;
   font-weight: 300;
   text-transform: uppercase;
+  /* "A/V Performance@sazareba" のように分割できない長い語で
+     横スクロールが出ないようにする */
+  overflow-wrap: break-word;
 }
 
 .work-page .about h2 {
@@ -272,6 +277,7 @@ main {
 
 .work-detail h3 {
   margin: 0;
+  overflow-wrap: break-word;
   font-family: var(--font-display);
   font-size: 31px;
   line-height: 1;
@@ -338,8 +344,14 @@ main {
 .works,
 .about,
 .contact {
-  width: min(100%, var(--page-column));
-  margin: 0 auto;
+  /* 固定サイドバーの右端より内側に入らないよう左余白に下限を設ける。
+     画面が広く中央寄せでもサイドバーを避けられる場合は従来どおり中央寄せになる。 */
+  --column-left: max(
+    calc(var(--menu-left) + var(--menu-width) + 18px - var(--content-pad)),
+    calc((100% - var(--page-column)) / 2)
+  );
+  width: min(calc(100% - var(--column-left)), var(--page-column));
+  margin: 0 auto 0 var(--column-left);
 }
 
 .works .section-head {
@@ -521,8 +533,14 @@ main {
 }
 
 .about-award-single-line {
-  white-space: nowrap;
   max-width: none;
+}
+
+/* 受賞名を1行に保つのは、コンテンツ列がその幅を確保できる画面のみ */
+@media (min-width: 1020px) {
+  .about-award-single-line {
+    white-space: nowrap;
+  }
 }
 
 .contact-links {
@@ -647,6 +665,12 @@ footer small {
     margin-bottom: 14px;
   }
 
+  /* 作品タイトルは "A/V Performance@sazareba" のように長く、
+     46pxのままだと語中で改行されるため画面幅に追従させる */
+  .work-page .about h2 {
+    font-size: clamp(20px, 7.2vw, 34px);
+  }
+
   .about p,
   .contact p,
   .contact-links a {
@@ -701,10 +725,6 @@ footer small {
     font-size: 15px;
     line-height: 1.55;
     max-width: none;
-  }
-
-  .about-award-single-line {
-    white-space: normal;
   }
 
   .work-detail h3 {
@@ -769,6 +789,44 @@ footer small {
   .site-header nav a.nav-instagram {
     margin-top: 16px;
     font-size: 17px;
+  }
+
+  /* 狭い画面では固定サイドバーをやめ、ロゴ・メニュー・本文を縦に積む */
+  body {
+    position: relative;
+  }
+
+  .site-header {
+    position: static;
+    width: auto;
+    padding: var(--menu-top) var(--content-pad) 0;
+  }
+
+  main {
+    margin-top: 22px;
+    margin-bottom: 40px;
+    padding: 0 var(--content-pad);
+  }
+
+  .works,
+  .about,
+  .contact {
+    --column-left: 0px;
+    width: 100%;
+    margin: 0;
+  }
+
+  footer {
+    position: static;
+    width: auto;
+    padding: 0 var(--content-pad);
+    margin-top: 36px;
+  }
+
+  .lang-switch {
+    position: absolute;
+    top: var(--menu-top);
+    right: var(--content-pad);
   }
 
 }
