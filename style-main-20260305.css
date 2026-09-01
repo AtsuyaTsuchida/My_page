@@ -9,7 +9,7 @@
   --menu-width: 240px;
   --content-left-gap: 92px;
   --content-pad: 24px;
-  --lang-gutter: 88px;
+  --lang-reserve: 64px;
   --content-top: 30px;
   --content-max: 920px;
   --page-column: 860px;
@@ -188,12 +188,24 @@ nav {
 
 .nav-works:hover .works-dropdown,
 .nav-works:focus-within .works-dropdown,
-.work-page .works-dropdown {
+.nav-works.is-open .works-dropdown {
   max-height: 520px;
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
   margin-top: 8px;
+}
+
+/* 作品ページでの常時展開は、縦積みにならない広い画面に限る。
+   狭い画面では畳んでおき、WORKS のタップで開く（script.js 側で制御）。 */
+@media (min-width: 861px) {
+  .work-page .works-dropdown {
+    max-height: 520px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+    margin-top: 8px;
+  }
 }
 
 .works-dropdown a {
@@ -217,7 +229,7 @@ main {
   margin-top: var(--content-top);
   margin-left: 0;
   margin-bottom: 84px;
-  padding: 0 var(--lang-gutter) 0 var(--content-pad);
+  padding: 0 var(--content-pad);
 }
 
 .section-head h2,
@@ -350,7 +362,11 @@ main {
     calc(var(--menu-left) + var(--menu-width) + 18px - var(--content-pad)),
     calc((100% - var(--page-column)) / 2)
   );
-  width: min(calc(100% - var(--column-left)), var(--page-column));
+  /* 右端が固定の JP/EN 切替に重ならないよう、その分だけ列幅を詰める */
+  width: min(
+    calc(100% - var(--column-left) - var(--lang-reserve)),
+    var(--page-column)
+  );
   margin: 0 auto 0 var(--column-left);
 }
 
@@ -805,7 +821,6 @@ footer small {
   main {
     margin-top: 22px;
     margin-bottom: 40px;
-    padding: 0 var(--content-pad);
   }
 
   .works,

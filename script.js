@@ -287,6 +287,43 @@ function initTextScramble() {
   }
 }
 
+function initWorksDropdown() {
+  const nav = document.querySelector('.nav-works');
+  if (!nav) return;
+
+  const trigger = nav.querySelector('a');
+  if (!trigger) return;
+
+  // ホバーできない環境、または縦積みレイアウトの幅ではタップで開閉する
+  const isTapLayout = () =>
+    window.matchMedia('(hover: none)').matches ||
+    window.matchMedia('(max-width: 860px)').matches;
+
+  function close() {
+    if (!nav.classList.contains('is-open')) return;
+    nav.classList.remove('is-open');
+    trigger.setAttribute('aria-expanded', 'false');
+    if (nav.contains(document.activeElement)) document.activeElement.blur();
+  }
+
+  trigger.addEventListener('click', (event) => {
+    if (!isTapLayout()) return;
+    // 2回目のタップはそのまま WORKS 一覧へ遷移させる
+    if (nav.classList.contains('is-open')) return;
+    event.preventDefault();
+    nav.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!nav.contains(event.target)) close();
+  });
+
+  window.addEventListener('resize', () => {
+    if (!isTapLayout()) close();
+  });
+}
+
 function initLanguageSwitch() {
   const body = document.body;
   if (!body) return;
@@ -397,6 +434,7 @@ initReveal();
 initShaderBackground();
 initTextScramble();
 initLanguageSwitch();
+initWorksDropdown();
 enforceCurrentDesign();
 startLegacyPlaceholderGuard();
 
