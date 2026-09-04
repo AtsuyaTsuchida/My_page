@@ -150,24 +150,52 @@ img {
   color: var(--ink);
 }
 
-/* ------------------------------------------------------------------ reel */
-/* トップページのみ。1作品 = 1画面。 */
+/* --------------------------------------------------------------- landing */
+/* トップページ。氏名と、その下に置いたメニューだけの1画面。 */
 
-.intro {
-  min-height: 66svh;
+.home main {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: clamp(40px, 9vh, 110px) var(--pad) clamp(38px, 7vh, 84px);
 }
 
-.intro h1 {
+.landing {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(48px, 10vh, 120px) 0;
+}
+
+.landing h1 {
   margin: 0;
   font-weight: 200;
   letter-spacing: -0.045em;
   line-height: 0.9;
   font-size: clamp(40px, 10.5vw, 168px);
 }
+
+.landing-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(3px, 0.7vh, 8px);
+  margin-top: clamp(26px, 5vh, 54px);
+}
+
+.landing-nav a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: clamp(17px, 2.4vw, 28px);
+  letter-spacing: -0.015em;
+  transition: color 0.2s ease, padding-left 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.landing-nav a:hover {
+  color: var(--ink);
+  padding-left: 10px;
+}
+
+/* ------------------------------------------------------------------ reel */
+/* /works のみ。1作品 = 1画面。 */
 
 .shot {
   position: relative;
@@ -246,8 +274,8 @@ main {
   padding: 0 var(--pad);
 }
 
-/* トップページのリールは端まで使う */
-.home main {
+/* リールは端まで使う */
+.reel main {
   padding: 0;
 }
 
