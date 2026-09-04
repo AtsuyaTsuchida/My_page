@@ -90,149 +90,226 @@ for (const link of navLinks) {
   });
 }
 
-function initShaderBackground() {
-  const canvas = document.getElementById('shader-bg');
+function initCurlBackground() {
+  const canvas = document.getElementById('bg-curl');
   if (!canvas) return;
 
-  const gl = canvas.getContext('webgl', { antialias: true, alpha: false });
-  if (!gl) return;
+  const gl = canvas.getContext('webgl', {
+    alpha: false,
+    antialias: false,
+    depth: false,
+    stencil: false,
+    powerPreference: 'low-power',
+  });
+  // WebGL が無い環境では body の地色だけが残る。背景は装飾なので黙って諦める。
+  if (!gl) {
+    canvas.remove();
+    return;
+  }
 
   const vertexSource = `
-    attribute vec2 a_position;
+    attribute vec2 aPos;
     void main() {
-      gl_Position = vec4(a_position, 0.0, 1.0);
+      gl_Position = vec4(aPos, 0.0, 1.0);
     }
   `;
 
   const fragmentSource = `
     precision highp float;
 
-    uniform vec2 u_resolution;
-    uniform float u_time;
+    uniform vec2 uRes;
+    uniform float uTime;
 
-    float rand(vec2 n) {
-      return fract(sin(dot(n, vec2(12.9898, 4.1414))) * 43758.5453);
+    float hash(vec2 p) {
+      p = fract(p * vec2(123.34, 456.21));
+      p += dot(p, p + 45.32);
+      return fract(p.x * p.y);
     }
 
-    float noise(vec2 p) {
-      vec2 ip = floor(p);
-      vec2 u = fract(p);
-      u = u * u * (3.0 - 2.0 * u);
-
-      float res = mix(
-        mix(rand(ip), rand(ip + vec2(1.0, 0.0)), u.x),
-        mix(rand(ip + vec2(0.0, 1.0)), rand(ip + vec2(1.0, 1.0)), u.x),
-        u.y
-      );
-
-      return res * res;
+    float vnoise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      float a = hash(i);
+      float b = hash(i + vec2(1.0, 0.0));
+      float c = hash(i + vec2(0.0, 1.0));
+      float d = hash(i + vec2(1.0, 1.0));
+      return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
     }
-
-    const mat2 mtx = mat2(0.80, 0.60, -0.60, 0.80);
 
     float fbm(vec2 p) {
-      float f = 0.0;
-
-      f += 0.500000 * noise(p + u_time); p = mtx * p * 2.02;
-      f += 0.031250 * noise(p); p = mtx * p * 2.01;
-      f += 0.250000 * noise(p); p = mtx * p * 2.03;
-      f += 0.125000 * noise(p); p = mtx * p * 2.01;
-      f += 0.062500 * noise(p); p = mtx * p * 2.04;
-      f += 0.015625 * noise(p + sin(u_time));
-
-      return f / 0.96875;
+      float s = 0.0;
+      float a = 0.5;
+      for (int i = 0; i < 3; i++) {
+        s += a * vnoise(p);
+        p = p * 2.03 + vec2(11.3, 7.7);
+        a *= 0.5;
+      }
+      return s;
     }
 
-    float pattern(vec2 p) {
-      return fbm(p + fbm(p + fbm(p)));
+    // スカラーポテンシャルの回転をとると、湧き出しのない流れ場になる（カールノイズ）
+    vec2 curl(vec2 p) {
+      const float e = 0.09;
+      float a = fbm(p);
+      float b = fbm(p + vec2(e, 0.0));
+      float c = fbm(p + vec2(0.0, e));
+      return vec2(c - a, a - b) / e;
     }
 
     void main() {
-      vec2 uv = gl_FragCoord.xy / u_resolution.x;
-      float shade = pattern(uv);
-      float bw = pow(clamp(shade, 0.0, 1.0), 1.4) * 0.25;
-      vec3 color = vec3(bw);
-      gl_FragColor = vec4(color, 1.0);
+      vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / min(uRes.x, uRes.y);
+      float t = uTime * 0.035;
+
+      // 流れ場に沿って逆向きに辿りながら濃度を積む＝絵の具を引き伸ばした筆致になる
+      vec2 q = uv * 1.35;
+      float paint = 0.0;
+      float wsum = 0.0;
+      for (int i = 0; i < 5; i++) {
+        vec2 v = curl(q * 0.9 + vec2(t, -t * 0.6));
+        q -= v * 0.035;
+        float w = 1.0 - float(i) * 0.16;
+        paint += fbm(q * 1.7 + vec2(0.0, t * 0.8)) * w;
+        wsum += w;
+      }
+      paint /= wsum;
+
+      float veil = smoothstep(0.15, 0.90, paint);
+      float edge = smoothstep(0.32, 0.72, paint);
+
+      vec3 base = vec3(0.039, 0.039, 0.043);
+      vec3 cool = vec3(0.100, 0.115, 0.145);
+      vec3 warm = vec3(0.260, 0.170, 0.085);
+
+      vec3 col = base;
+      col = mix(col, cool, veil);
+      col = mix(col, warm, pow(edge, 1.8) * 0.70);
+
+      // 周辺減光
+      float vig = clamp(1.0 - 0.45 * dot(uv, uv), 0.0, 1.0);
+      col *= vig;
+
+      // 暗部の階調段差を隠す微細なノイズ
+      col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * 0.012;
+
+      gl_FragColor = vec4(max(col, 0.0), 1.0);
     }
   `;
 
-  function compileShader(type, source) {
+  function compile(type, source) {
     const shader = gl.createShader(type);
-    if (!shader) return null;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error('curl background:', gl.getShaderInfoLog(shader));
       gl.deleteShader(shader);
       return null;
     }
     return shader;
   }
 
-  const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
-  const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
-  if (!vertexShader || !fragmentShader) return;
-
-  const program = gl.createProgram();
-  if (!program) return;
-
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program);
-
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    gl.deleteProgram(program);
+  const vs = compile(gl.VERTEX_SHADER, vertexSource);
+  const fs = compile(gl.FRAGMENT_SHADER, fragmentSource);
+  if (!vs || !fs) {
+    canvas.remove();
     return;
   }
 
-  const positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  const program = gl.createProgram();
+  gl.attachShader(program, vs);
+  gl.attachShader(program, fs);
+  gl.linkProgram(program);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error('curl background:', gl.getProgramInfoLog(program));
+    canvas.remove();
+    return;
+  }
+  gl.useProgram(program);
+
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.bufferData(
     gl.ARRAY_BUFFER,
-    new Float32Array([
-      -1, -1,
-      1, -1,
-      -1, 1,
-      -1, 1,
-      1, -1,
-      1, 1,
-    ]),
+    new Float32Array([-1, -1, 3, -1, -1, 3]),
     gl.STATIC_DRAW
   );
+  const aPos = gl.getAttribLocation(program, 'aPos');
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
-  const positionLocation = gl.getAttribLocation(program, 'a_position');
-  const timeLocation = gl.getUniformLocation(program, 'u_time');
-  const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+  const uRes = gl.getUniformLocation(program, 'uRes');
+  const uTime = gl.getUniformLocation(program, 'uTime');
+
+  // 背景なので実解像度は落とす。文字の可読性には影響しない。
+  const SCALE = 0.6;
 
   function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const width = Math.floor(window.innerWidth * dpr);
-    const height = Math.floor(window.innerHeight * dpr);
-    if (canvas.width !== width || canvas.height !== height) {
-      canvas.width = width;
-      canvas.height = height;
-      gl.viewport(0, 0, width, height);
+    const w = Math.max(1, Math.round(canvas.clientWidth * SCALE));
+    const h = Math.max(1, Math.round(canvas.clientHeight * SCALE));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
     }
   }
 
-  function render(now) {
+  function draw(seconds) {
     resize();
-
-    gl.useProgram(program);
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-    // Use wall-clock time so shader phase stays continuous across page navigations.
-    const globalSeconds = (performance.timeOrigin + now) * 0.001;
-    gl.uniform1f(timeLocation, globalSeconds);
-    gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
-
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(render);
+    gl.uniform1f(uTime, seconds);
+    gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
-  window.addEventListener('resize', resize);
-  requestAnimationFrame(render);
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const FRAME = 1000 / 40;
+  let raf = null;
+  let last = 0;
+
+  function loop(now) {
+    raf = window.requestAnimationFrame(loop);
+    if (now - last < FRAME) return;
+    last = now;
+    draw(now * 0.001);
+  }
+
+  function start() {
+    if (raf !== null || reduce.matches || document.hidden) return;
+    raf = window.requestAnimationFrame(loop);
+  }
+
+  function stop() {
+    if (raf === null) return;
+    window.cancelAnimationFrame(raf);
+    raf = null;
+  }
+
+  draw(0);
+  start();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else start();
+  });
+
+  window.addEventListener('resize', () => {
+    if (raf === null) draw(window.performance.now() * 0.001);
+  });
+
+  const onReduceChange = () => {
+    if (reduce.matches) {
+      stop();
+      draw(0);
+    } else {
+      start();
+    }
+  };
+  if (reduce.addEventListener) reduce.addEventListener('change', onReduceChange);
+  else if (reduce.addListener) reduce.addListener(onReduceChange);
+
+  canvas.addEventListener('webglcontextlost', (event) => {
+    event.preventDefault();
+    stop();
+  });
 }
 
 function initTextScramble() {
@@ -394,7 +471,7 @@ function startLegacyPlaceholderGuard() {
 
 removeLegacyPlaceholderText();
 initReveal();
-initShaderBackground();
+initCurlBackground();
 initTextScramble();
 initLanguageSwitch();
 enforceCurrentDesign();

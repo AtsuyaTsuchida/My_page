@@ -153,6 +153,49 @@ img {
 /* --------------------------------------------------------------- landing */
 /* トップページ。氏名と、その下に置いたメニューだけの1画面。 */
 
+/* WebGL のカールノイズ背景。描画は script.js の initCurlBackground。 */
+#bg-curl {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* 文字が乗る左側だけ背景を沈めて可読性を確保する */
+.bg-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    rgba(10, 10, 11, 0.88) 0%,
+    rgba(10, 10, 11, 0.62) 34%,
+    rgba(10, 10, 11, 0) 66%
+  );
+}
+
+@media (max-width: 760px) {
+  .bg-veil {
+    background: linear-gradient(
+      165deg,
+      rgba(10, 10, 11, 0.82) 0%,
+      rgba(10, 10, 11, 0.5) 52%,
+      rgba(10, 10, 11, 0.12) 100%
+    );
+  }
+}
+
+/* 背景より前に文字を置く */
+.home main,
+.home footer {
+  position: relative;
+  z-index: 1;
+}
+
 .home main {
   display: flex;
 }
@@ -183,7 +226,7 @@ img {
 
 .landing-nav a {
   text-decoration: none;
-  color: var(--muted);
+  color: rgba(244, 244, 242, 0.74);
   font-size: clamp(17px, 2.4vw, 28px);
   letter-spacing: -0.015em;
   transition: color 0.2s ease, padding-left 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
