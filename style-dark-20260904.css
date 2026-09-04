@@ -12,7 +12,9 @@
   --hair: rgba(244, 244, 242, 0.14);
   --pad: clamp(16px, 4.5vw, 48px);
   --col: 860px;
-  --font: Inter, "Zen Kaku Gothic New", sans-serif;
+  /* Schibsted Grotesk の最軽量は 400。見出しの 200/300 指定は英字では 400 に
+     丸められ、日本語側だけ Zen Kaku の 300 が使われる。 */
+  --font: "Schibsted Grotesk", "Zen Kaku Gothic New", sans-serif;
 }
 
 * {
