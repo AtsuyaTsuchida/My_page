@@ -5,15 +5,16 @@
 ------------------------------------------------------------------ */
 
 :root {
-  /* この2つを theme.js が訪問ごとに差し替える。他の色はすべてここから導く。 */
-  --bg-rgb: 10, 10, 11;
-  --ink-rgb: 244, 244, 242;
+  /* 地色はオレンジ固定。他の色はすべてこの2つから導く。
+     明るい地色なので、派生色は暗い側へ濃く重ねる。 */
+  --bg-rgb: 244, 140, 52;
+  --ink-rgb: 28, 18, 10;
 
   --bg: rgb(var(--bg-rgb));
   --ink: rgb(var(--ink-rgb));
-  --muted: rgba(var(--ink-rgb), 0.52);
-  --faint: rgba(var(--ink-rgb), 0.3);
-  --hair: rgba(var(--ink-rgb), 0.14);
+  --muted: rgba(var(--ink-rgb), 0.82);
+  --faint: rgba(var(--ink-rgb), 0.74);
+  --hair: rgba(var(--ink-rgb), 0.26);
   --pad: clamp(16px, 4.5vw, 48px);
   --col: 860px;
   /* Schibsted Grotesk の最軽量は 400。見出しの 200/300 指定は英字では 400 に
@@ -72,10 +73,10 @@ img {
   gap: 14px 20px;
   padding: 18px var(--pad);
   /* 全画面画像の上でも、スクロールで潜り込む本文の上でも文字が読めるようにする */
-  background: rgba(var(--bg-rgb), 0.72);
+  background: rgba(var(--bg-rgb), 0.88);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(var(--ink-rgb), 0.07);
+  border-bottom: 1px solid rgba(var(--ink-rgb), 0.14);
 }
 
 .logo {
@@ -101,7 +102,7 @@ img {
   text-transform: uppercase;
   text-decoration: none;
   color: var(--ink);
-  opacity: 0.6;
+  opacity: 0.76;
   transition: opacity 0.2s ease;
   white-space: nowrap;
 }
@@ -115,7 +116,7 @@ img {
   display: flex;
   align-items: center;
   /* 文字リンクと視覚的な重さを揃える */
-  opacity: 0.55;
+  opacity: 0.68;
 }
 
 .site-header nav a.ig:hover {
@@ -158,7 +159,7 @@ img {
   padding: 6px 12px;
   border: 1px solid var(--hair);
   border-radius: 999px;
-  background: rgba(var(--bg-rgb), 0.78);
+  background: rgba(var(--bg-rgb), 0.9);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
@@ -201,14 +202,14 @@ img {
   height: 100%;
   object-fit: cover;
   transform: scale(1.05);
-  filter: brightness(0.6) saturate(0.85);
+  filter: brightness(0.92) saturate(1);
   transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.7s ease;
 }
 
 .shot:hover img,
 .shot:focus-visible img {
   transform: scale(1);
-  filter: brightness(0.82) saturate(1);
+  filter: brightness(1.04) saturate(1.05);
 }
 
 .shot::after {
@@ -218,9 +219,10 @@ img {
   pointer-events: none;
   background: linear-gradient(
     to top,
-    rgba(var(--bg-rgb), 0.92) 0%,
-    rgba(var(--bg-rgb), 0.1) 46%,
-    rgba(var(--bg-rgb), 0.4) 100%
+    rgba(var(--bg-rgb), 0.93) 0%,
+    rgba(var(--bg-rgb), 0.55) 18%,
+    rgba(var(--bg-rgb), 0.06) 44%,
+    rgba(var(--bg-rgb), 0.16) 100%
   );
 }
 
