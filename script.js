@@ -159,17 +159,17 @@ function initCurlBackground() {
       return vec2(c - a, a - b) / e;
     }
 
-    void main() {
-      vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / min(uRes.x, uRes.y);
-      float t = uTime * 0.15;
+    vec3 hsv2rgb(vec3 c) {
+      vec3 p = abs(fract(c.xxx + vec3(0.0, 0.6666667, 0.3333333)) * 6.0 - 3.0);
+      return c.z * mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), c.y);
+    }
 
-      vec2 q = uv * 1.35;
-      float paint = 0.0;
+    // 流れ場を遡りながら濃度を積む＝絵の具を引き伸ばした筆致
+    float field(vec2 p, float t) {
+      vec2 q = p;
+      float acc = 0.0;
       float wsum = 0.0;
-      float stir = 0.0;
-
-      // 流れ場に沿って逆向きに辿りながら濃度を積む＝絵の具を引き伸ばした筆致になる
-      for (int i = 0; i < 6; i++) {
+      for (int i = 0; i < 5; i++) {
         vec2 v = curl(q * 1.5 + vec2(t, -t * 0.6));
 
         // ポインタのまわりに渦をひとつ足して、絵の具をかき混ぜる
@@ -178,42 +178,80 @@ function initCurlBackground() {
         float infl = exp(-r2 * 5.0) * uHold;
         v += vec2(-dp.y, dp.x) / (sqrt(r2) + 0.10) * infl * 3.4;
         v -= dp * infl * 1.5;
-        stir += infl;
 
-        q -= v * 0.072;
-        float w = 1.0 - float(i) * 0.13;
-        paint += fbm(q * 2.7 + vec2(0.0, t * 0.8)) * w;
+        q -= v * 0.085;
+        float w = 1.0 - float(i) * 0.15;
+        acc += fbm(q * 2.7 + vec2(0.0, t * 0.8)) * w;
         wsum += w;
       }
-      paint /= wsum;
-      stir /= 6.0;
+      return acc / wsum;
+    }
 
-      // 濃度差を刻んで筆の跡を分ける
-      float wash = smoothstep(0.10, 0.62, paint);
-      float edge = smoothstep(0.38, 0.66, paint);
-      float rim  = smoothstep(0.52, 0.60, paint) * (1.0 - smoothstep(0.60, 0.74, paint));
+    void main() {
+      vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / min(uRes.x, uRes.y);
 
-      // オレンジを主役に、補色側の淡い青灰と、隣接色の淡いピーチを添える
-      vec3 base   = vec3(0.043, 0.043, 0.048);
-      vec3 haze   = vec3(0.255, 0.300, 0.395);
-      vec3 orange = vec3(0.995, 0.615, 0.335);
-      vec3 peach  = vec3(0.990, 0.760, 0.615);
+      // 毎秒14回切り替わる種。これで各効果を散発させる。
+      // 画面全体で同じ値なので分岐は発散せず、負荷は跳ねない。
+      float tick = floor(uTime * 14.0);
+      float r1 = hash(vec2(tick, 1.7));
+      float r2 = hash(vec2(tick, 9.1));
+      float r3 = hash(vec2(tick, 21.3));
 
-      vec3 col = base;
-      col = mix(col, haze, wash * 0.55);
-      col = mix(col, orange, pow(edge, 1.3) * 0.82);
-      col = mix(col, peach, rim * 0.34);
+      float glitch = step(0.74, r1);
+      float slit = step(0.70, r2);
+      float split = step(0.55, r3) * glitch;
 
-      // かき混ぜたところはわずかに温度が上がる
-      col = mix(col, orange, clamp(stir, 0.0, 1.0) * 0.18);
+      // スリットスキャン：走査線ごとに時刻をずらして像を引き伸ばす
+      float rowT = uv.y * (2.2 * slit + 0.25);
+      float t = uTime * 0.30 + rowT;
+
+      // 走査線ブロック単位の横ずれ
+      float band = floor(uv.y * (60.0 + 120.0 * r2) + tick * 3.0);
+      float bandOn = step(0.62, hash(vec2(band, tick)));
+      float tear = (hash(vec2(band * 1.7, tick + 5.0)) - 0.5) * 0.42 * glitch * bandOn;
+      vec2 p = vec2(uv.x + tear, uv.y) * 1.35;
+
+      float f0 = field(p, t);
+      float f1 = f0;
+      float f2 = f0;
+      if (split > 0.5) {
+        float ab = 0.035;
+        f1 = field(p + vec2(ab, 0.0), t);
+        f2 = field(p - vec2(ab, 0.0), t);
+      }
+
+      // 色相は時刻に対して線形に回り続ける
+      float hueBase = uTime * 0.075 + uv.x * 0.10 + uv.y * 0.06;
+      vec3 col;
+      col.r = hsv2rgb(vec3(fract(hueBase + f1 * 0.55),
+                           mix(0.20, 0.90, smoothstep(0.25, 0.75, f1)),
+                           smoothstep(0.10, 0.70, f1))).r;
+      col.g = hsv2rgb(vec3(fract(hueBase + f0 * 0.55),
+                           mix(0.20, 0.90, smoothstep(0.25, 0.75, f0)),
+                           smoothstep(0.10, 0.70, f0))).g;
+      col.b = hsv2rgb(vec3(fract(hueBase + f2 * 0.55),
+                           mix(0.20, 0.90, smoothstep(0.25, 0.75, f2)),
+                           smoothstep(0.10, 0.70, f2))).b;
+
+      // 暗部は黒へ落として、文字が乗る側を沈める
+      float lum = smoothstep(0.08, 0.66, f0);
+      col *= mix(0.12, 1.0, lum);
+
+      // 走査線
+      col *= 1.0 - 0.10 * step(0.5, fract(gl_FragCoord.y * 0.5));
+
+      // ブロックノイズ。面で光らせると点滅がきつくなるので小さく散らす。
+      float blk = step(0.86, hash(vec2(floor(uv.x * 22.0 + tick * 2.0),
+                                       floor(uv.y * 14.0 - tick))));
+      col += blk * glitch * 0.10;
 
       float vig = clamp(1.0 - 0.38 * dot(uv, uv), 0.0, 1.0);
       col *= vig;
 
       // 暗部の階調段差を隠す微細なノイズ
-      col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * 0.012;
+      col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * 0.02;
 
-      gl_FragColor = vec4(max(col, 0.0), 1.0);
+      gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
     }
   `;
 

@@ -173,12 +173,12 @@ img {
   z-index: 0;
   pointer-events: none;
   background:
-    linear-gradient(to top, rgba(10, 10, 11, 0.8) 0%, rgba(10, 10, 11, 0) 20%),
+    linear-gradient(to top, rgba(10, 10, 11, 0.88) 0%, rgba(10, 10, 11, 0) 26%),
     linear-gradient(
       100deg,
-      rgba(10, 10, 11, 0.9) 0%,
-      rgba(10, 10, 11, 0.55) 22%,
-      rgba(10, 10, 11, 0) 48%
+      rgba(10, 10, 11, 0.94) 0%,
+      rgba(10, 10, 11, 0.7) 26%,
+      rgba(10, 10, 11, 0) 56%
     );
 }
 
