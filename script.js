@@ -287,43 +287,6 @@ function initTextScramble() {
   }
 }
 
-function initWorksDropdown() {
-  const nav = document.querySelector('.nav-works');
-  if (!nav) return;
-
-  const trigger = nav.querySelector('a');
-  if (!trigger) return;
-
-  // ホバーできない環境、または縦積みレイアウトの幅ではタップで開閉する
-  const isTapLayout = () =>
-    window.matchMedia('(hover: none)').matches ||
-    window.matchMedia('(max-width: 860px)').matches;
-
-  function close() {
-    if (!nav.classList.contains('is-open')) return;
-    nav.classList.remove('is-open');
-    trigger.setAttribute('aria-expanded', 'false');
-    if (nav.contains(document.activeElement)) document.activeElement.blur();
-  }
-
-  trigger.addEventListener('click', (event) => {
-    if (!isTapLayout()) return;
-    // 2回目のタップはそのまま WORKS 一覧へ遷移させる
-    if (nav.classList.contains('is-open')) return;
-    event.preventDefault();
-    nav.classList.add('is-open');
-    trigger.setAttribute('aria-expanded', 'true');
-  });
-
-  document.addEventListener('click', (event) => {
-    if (!nav.contains(event.target)) close();
-  });
-
-  window.addEventListener('resize', () => {
-    if (!isTapLayout()) close();
-  });
-}
-
 function initLanguageSwitch() {
   const body = document.body;
   if (!body) return;
@@ -380,8 +343,8 @@ function enforceCurrentDesign() {
   document.querySelectorAll('.work-photo-bg').forEach((el) => el.remove());
 
   // Hard-apply current palette so old theme snapshots cannot stay visible.
-  document.body.style.backgroundColor = '#cdced1';
-  document.body.style.color = '#141517';
+  document.body.style.backgroundColor = '#0a0a0b';
+  document.body.style.color = '#f4f4f2';
 }
 
 function removeLegacyPlaceholderText() {
@@ -434,7 +397,6 @@ initReveal();
 initShaderBackground();
 initTextScramble();
 initLanguageSwitch();
-initWorksDropdown();
 enforceCurrentDesign();
 startLegacyPlaceholderGuard();
 

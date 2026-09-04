@@ -1,0 +1,541 @@
+/* ------------------------------------------------------------------
+   Atsuya Tsuchida — dark theme
+   トップページは作品を1点ずつ全画面で見せるリール構成、
+   下層ページは 860px の一列組みで、共通の固定トップバーを持つ。
+------------------------------------------------------------------ */
+
+:root {
+  --bg: #0a0a0b;
+  --ink: #f4f4f2;
+  --muted: rgba(244, 244, 242, 0.52);
+  --faint: rgba(244, 244, 242, 0.3);
+  --hair: rgba(244, 244, 242, 0.14);
+  --pad: clamp(16px, 4.5vw, 48px);
+  --col: 860px;
+  --font: Inter, "Noto Sans JP", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, "Roboto Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable both-edges;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* 内容が短いページでもフッターが画面下に着くようにする */
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* 旧デザインの背景ノードが復元された場合の保険 */
+#shader-bg,
+.work-photo-bg,
+.bg-shape {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------------- header */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px 20px;
+  padding: 18px var(--pad);
+  /* 全画面画像の上でも、スクロールで潜り込む本文の上でも文字が読めるようにする */
+  background: rgba(10, 10, 11, 0.72);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(244, 244, 242, 0.07);
+}
+
+.logo {
+  font-size: clamp(12px, 1.3vw, 14px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(12px, 2vw, 26px);
+}
+
+.site-header nav a {
+  font-size: clamp(10px, 1.1vw, 12px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.site-header nav a:hover,
+.site-header nav a.active {
+  opacity: 1;
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 14px var(--pad) 12px;
+  }
+}
+
+/* ------------------------------------------------------------ lang switch */
+/* script.js が body 末尾に生成するため固定配置で右下に置く */
+
+.lang-switch {
+  position: fixed;
+  right: var(--pad);
+  bottom: 14px;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 12px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  background: rgba(10, 10, 11, 0.78);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.lang-switch button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--faint);
+  transition: color 0.18s ease;
+}
+
+.lang-switch button:hover,
+.lang-switch button.active {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ reel */
+/* トップページのみ。1作品 = 1画面。 */
+
+.intro {
+  min-height: 66svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(40px, 9vh, 110px) var(--pad) clamp(38px, 7vh, 84px);
+}
+
+.intro h1 {
+  margin: 0;
+  font-weight: 200;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  font-size: clamp(40px, 10.5vw, 168px);
+}
+
+.shot {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: min(86svh, 880px);
+  border-top: 1px solid var(--hair);
+  text-decoration: none;
+  color: inherit;
+}
+
+.shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.05);
+  filter: brightness(0.6) saturate(0.85);
+  transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.7s ease;
+}
+
+.shot:hover img,
+.shot:focus-visible img {
+  transform: scale(1);
+  filter: brightness(0.82) saturate(1);
+}
+
+.shot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 11, 0.92) 0%,
+    rgba(10, 10, 11, 0.1) 46%,
+    rgba(10, 10, 11, 0.4) 100%
+  );
+}
+
+.cap {
+  position: absolute;
+  z-index: 2;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: clamp(24px, 4.5vh, 52px);
+}
+
+.cap .num {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}
+
+.cap h2 {
+  margin: 8px 0 0;
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  font-size: clamp(24px, 5.6vw, 78px);
+  overflow-wrap: break-word;
+}
+
+.cap .meta {
+  margin-top: 12px;
+  font-size: clamp(10px, 1.1vw, 12.5px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (max-width: 700px) {
+  .shot {
+    height: 56svh;
+  }
+}
+
+/* ------------------------------------------------------- 下層ページの器 */
+
+main {
+  padding: 0 var(--pad);
+}
+
+/* トップページのリールは端まで使う */
+.home main {
+  padding: 0;
+}
+
+.about,
+.contact {
+  width: min(100%, var(--col));
+  margin: 0 auto;
+  padding: clamp(34px, 6vh, 76px) 0 clamp(50px, 9vh, 104px);
+}
+
+.about h2,
+.contact h2 {
+  margin: 0 0 clamp(20px, 3.4vh, 38px);
+  font-weight: 200;
+  letter-spacing: -0.04em;
+  line-height: 0.94;
+  font-size: clamp(34px, 7vw, 92px);
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+}
+
+/* 作品ページの見出しは作品名そのものなので大文字化しない */
+.work-page .about h2 {
+  text-transform: none;
+  font-size: clamp(26px, 5.2vw, 62px);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal.show {
+  opacity: 1;
+  transform: none;
+}
+
+/* ----------------------------------------------------------------- about */
+
+.about-lead {
+  padding-bottom: clamp(22px, 3.6vh, 38px);
+  border-bottom: 1px solid var(--hair);
+}
+
+.about-nameplate {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+
+.about-name-en {
+  font-size: clamp(19px, 2.5vw, 29px);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.about-name-ja {
+  font-size: 14.5px;
+  color: var(--muted);
+}
+
+.about-intro {
+  margin: 0;
+  max-width: 48ch;
+  font-size: clamp(14px, 1.4vw, 16px);
+  line-height: 1.95;
+  color: var(--muted);
+}
+
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(26px, 4.5vh, 46px);
+  margin-top: clamp(26px, 4.5vh, 46px);
+}
+
+.about-block h3 {
+  margin: 0 0 16px;
+  font-size: clamp(15px, 1.6vw, 18px);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.about-year {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 6px 20px;
+  margin-top: 18px;
+}
+
+.about-year h4 {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: var(--faint);
+  padding-top: 4px;
+}
+
+.about-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.about-list li {
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--muted);
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 560px) {
+  .about-year {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* --------------------------------------------------------------- contact */
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contact-links a {
+  display: block;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair);
+  text-decoration: none;
+  color: var(--muted);
+  font-size: clamp(14px, 1.7vw, 19px);
+  letter-spacing: -0.005em;
+  transition: color 0.22s ease, padding-left 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  overflow-wrap: break-word;
+}
+
+.contact-links a:first-child {
+  border-top: 1px solid var(--hair);
+}
+
+.contact-links a:hover {
+  color: var(--ink);
+  padding-left: 12px;
+}
+
+/* ---------------------------------------------------------- 作品詳細ページ */
+
+.work-detail {
+  display: block;
+}
+
+.work-meta {
+  margin: 0 0 clamp(22px, 3.6vh, 38px);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.work-hero {
+  margin: 0 0 clamp(26px, 4.5vh, 48px);
+}
+
+.work-hero img {
+  width: 100%;
+  border-radius: 2px;
+}
+
+.work-block {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 14px 30px;
+  padding: clamp(20px, 3.2vh, 30px) 0;
+  border-top: 1px solid var(--hair);
+}
+
+.work-block h3 {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding-top: 5px;
+  overflow-wrap: break-word;
+}
+
+.work-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.work-detail p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.95;
+  color: var(--muted);
+}
+
+.work-lead {
+  font-size: clamp(15px, 1.6vw, 17px) !important;
+  line-height: 1.85 !important;
+  color: var(--ink) !important;
+}
+
+.work-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.work-list li {
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: var(--muted);
+  overflow-wrap: break-word;
+}
+
+.overview-list li {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--faint);
+}
+
+@media (max-width: 760px) {
+  .work-block {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .work-block h3 {
+    padding-top: 0;
+  }
+}
+
+/* ---------------------------------------------------------------- footer */
+
+footer {
+  border-top: 1px solid var(--hair);
+  padding: 34px var(--pad) 76px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 28px;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+footer a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+footer a:hover {
+  color: var(--ink);
+}
