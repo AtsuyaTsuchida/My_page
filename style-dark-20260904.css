@@ -155,8 +155,8 @@ img {
   z-index: 70;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 6px 12px;
+  gap: 2px;
+  padding: 3px;
   border: 1px solid var(--hair);
   border-radius: 999px;
   background: rgba(var(--bg-rgb), 0.9);
@@ -166,20 +166,34 @@ img {
 
 .lang-switch button {
   border: 0;
-  background: transparent;
-  padding: 0;
   margin: 0;
+  /* WCAG 2.5.8 の最小タップ領域 24x24 を確保する */
+  padding: 7px 12px;
+  border-radius: 999px;
   cursor: pointer;
   font-family: inherit;
   font-size: 11px;
   letter-spacing: 0.06em;
-  color: var(--faint);
-  transition: color 0.18s ease;
+  /* 選択中は塗りつぶし、非選択は地色のまま。透明度差だけだと判別しづらい。 */
+  background: transparent;
+  color: var(--muted);
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
-.lang-switch button:hover,
-.lang-switch button.active {
+.lang-switch button:hover {
   color: var(--ink);
+  background: rgba(var(--ink-rgb), 0.10);
+}
+
+.lang-switch button.active,
+.lang-switch button.active:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.lang-switch button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
 
 /* ------------------------------------------------------------------ reel */

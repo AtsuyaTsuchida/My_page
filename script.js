@@ -172,7 +172,9 @@ function initLanguageSwitch() {
     const safeLang = lang === 'en' ? 'en' : 'jp';
 
     for (const btn of switchRoot.querySelectorAll('button')) {
-      btn.classList.toggle('active', btn.getAttribute('data-lang') === safeLang);
+      const on = btn.getAttribute('data-lang') === safeLang;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
 
     document.documentElement.lang = safeLang === 'jp' ? 'ja' : 'en';
