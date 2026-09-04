@@ -161,7 +161,7 @@ function initCurlBackground() {
 
     void main() {
       vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / min(uRes.x, uRes.y);
-      float t = uTime * 0.035;
+      float t = uTime * 0.15;
 
       vec2 q = uv * 1.35;
       float paint = 0.0;
@@ -175,12 +175,12 @@ function initCurlBackground() {
         // ポインタのまわりに渦をひとつ足して、絵の具をかき混ぜる
         vec2 dp = q - uPointer;
         float r2 = dot(dp, dp);
-        float infl = exp(-r2 * 7.0) * uHold;
-        v += vec2(-dp.y, dp.x) / (sqrt(r2) + 0.10) * infl * 2.4;
-        v -= dp * infl * 1.1;
+        float infl = exp(-r2 * 5.0) * uHold;
+        v += vec2(-dp.y, dp.x) / (sqrt(r2) + 0.10) * infl * 3.4;
+        v -= dp * infl * 1.5;
         stir += infl;
 
-        q -= v * 0.055;
+        q -= v * 0.072;
         float w = 1.0 - float(i) * 0.13;
         paint += fbm(q * 2.7 + vec2(0.0, t * 0.8)) * w;
         wsum += w;
@@ -308,9 +308,9 @@ function initCurlBackground() {
   function draw(seconds) {
     resize();
     // 追従を鈍らせて、絵の具をなでるような手触りにする
-    eased.x += (target.x - eased.x) * 0.07;
-    eased.y += (target.y - eased.y) * 0.07;
-    hold += (targetHold - hold) * 0.05;
+    eased.x += (target.x - eased.x) * 0.13;
+    eased.y += (target.y - eased.y) * 0.13;
+    hold += (targetHold - hold) * 0.09;
     gl.uniform1f(uTime, seconds);
     gl.uniform2f(uRes, canvas.width, canvas.height);
     gl.uniform2f(uPointer, eased.x, eased.y);
@@ -319,7 +319,7 @@ function initCurlBackground() {
   }
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const FRAME = 1000 / 40;
+  const FRAME = 1000 / 60;
   let raf = null;
   let last = 0;
 
