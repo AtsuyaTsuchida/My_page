@@ -198,8 +198,9 @@ function enforceCurrentDesign() {
   document.querySelectorAll('.work-photo-bg').forEach((el) => el.remove());
 
   // Hard-apply current palette so old theme snapshots cannot stay visible.
-  document.body.style.backgroundColor = '#0a0a0b';
-  document.body.style.color = '#f4f4f2';
+  var cs = getComputedStyle(document.documentElement);
+  document.body.style.backgroundColor = cs.getPropertyValue('--bg').trim();
+  document.body.style.color = cs.getPropertyValue('--ink').trim();
 }
 
 function removeLegacyPlaceholderText() {
