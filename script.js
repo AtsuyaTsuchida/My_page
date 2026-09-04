@@ -119,6 +119,8 @@ function initCurlBackground() {
 
     uniform vec2 uRes;
     uniform float uTime;
+    uniform vec2 uPointer;   // uv と同じ座標系
+    uniform float uHold;     // ポインタの効き具合 0..1
 
     float hash(vec2 p) {
       p = fract(p * vec2(123.34, 456.21));
@@ -161,34 +163,50 @@ function initCurlBackground() {
       vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / min(uRes.x, uRes.y);
       float t = uTime * 0.035;
 
-      // 流れ場に沿って逆向きに辿りながら濃度を積む＝絵の具を引き伸ばした筆致になる
       vec2 q = uv * 1.35;
       float paint = 0.0;
       float wsum = 0.0;
+      float stir = 0.0;
+
+      // 流れ場に沿って逆向きに辿りながら濃度を積む＝絵の具を引き伸ばした筆致になる
       for (int i = 0; i < 6; i++) {
         vec2 v = curl(q * 1.5 + vec2(t, -t * 0.6));
+
+        // ポインタのまわりに渦をひとつ足して、絵の具をかき混ぜる
+        vec2 dp = q - uPointer;
+        float r2 = dot(dp, dp);
+        float infl = exp(-r2 * 7.0) * uHold;
+        v += vec2(-dp.y, dp.x) / (sqrt(r2) + 0.10) * infl * 2.4;
+        v -= dp * infl * 1.1;
+        stir += infl;
+
         q -= v * 0.055;
         float w = 1.0 - float(i) * 0.13;
         paint += fbm(q * 2.7 + vec2(0.0, t * 0.8)) * w;
         wsum += w;
       }
       paint /= wsum;
+      stir /= 6.0;
 
-      // 濃度差を強めに刻んで、筆の跡がはっきり分かれて見えるようにする
+      // 濃度差を刻んで筆の跡を分ける
       float wash = smoothstep(0.10, 0.62, paint);
       float edge = smoothstep(0.38, 0.66, paint);
-      float rim  = smoothstep(0.52, 0.60, paint) * (1.0 - smoothstep(0.60, 0.72, paint));
+      float rim  = smoothstep(0.52, 0.60, paint) * (1.0 - smoothstep(0.60, 0.74, paint));
 
-      vec3 base = vec3(0.039, 0.039, 0.043);
-      vec3 cool = vec3(0.150, 0.170, 0.215);
-      vec3 warm = vec3(0.470, 0.300, 0.140);
+      // オレンジを主役に、補色側の淡い青灰と、隣接色の淡いピーチを添える
+      vec3 base   = vec3(0.043, 0.043, 0.048);
+      vec3 haze   = vec3(0.255, 0.300, 0.395);
+      vec3 orange = vec3(0.995, 0.615, 0.335);
+      vec3 peach  = vec3(0.990, 0.760, 0.615);
 
       vec3 col = base;
-      col = mix(col, cool, wash);
-      col = mix(col, warm, pow(edge, 1.4) * 0.85);
-      col += vec3(0.10, 0.075, 0.04) * rim;   // 筆の縁のハイライト
+      col = mix(col, haze, wash * 0.55);
+      col = mix(col, orange, pow(edge, 1.3) * 0.82);
+      col = mix(col, peach, rim * 0.34);
 
-      // 周辺減光
+      // かき混ぜたところはわずかに温度が上がる
+      col = mix(col, orange, clamp(stir, 0.0, 1.0) * 0.18);
+
       float vig = clamp(1.0 - 0.38 * dot(uv, uv), 0.0, 1.0);
       col *= vig;
 
@@ -242,6 +260,8 @@ function initCurlBackground() {
 
   const uRes = gl.getUniformLocation(program, 'uRes');
   const uTime = gl.getUniformLocation(program, 'uTime');
+  const uPointer = gl.getUniformLocation(program, 'uPointer');
+  const uHold = gl.getUniformLocation(program, 'uHold');
 
   // 背景なので実解像度は落とす。文字の可読性には影響しない。
   const SCALE = 0.6;
@@ -256,10 +276,45 @@ function initCurlBackground() {
     }
   }
 
+  // ---- ポインタ追従 ----
+  const target = { x: 0.0, y: 0.0 };
+  const eased = { x: 0.0, y: 0.0 };
+  let targetHold = 0;
+  let hold = 0;
+
+  function setPointer(clientX, clientY) {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    if (!w || !h) return;
+    const m = Math.min(w, h);
+    target.x = ((clientX - w * 0.5) / m) * 1.35;
+    // gl_FragCoord は下が原点なので Y を反転する
+    target.y = (-(clientY - h * 0.5) / m) * 1.35;
+    targetHold = 1;
+  }
+
+  window.addEventListener(
+    'pointermove',
+    (event) => setPointer(event.clientX, event.clientY),
+    { passive: true }
+  );
+  window.addEventListener('pointerdown', (event) => {
+    setPointer(event.clientX, event.clientY);
+    targetHold = 1;
+  }, { passive: true });
+  window.addEventListener('pointerleave', () => { targetHold = 0; }, { passive: true });
+  document.addEventListener('mouseleave', () => { targetHold = 0; }, { passive: true });
+
   function draw(seconds) {
     resize();
+    // 追従を鈍らせて、絵の具をなでるような手触りにする
+    eased.x += (target.x - eased.x) * 0.07;
+    eased.y += (target.y - eased.y) * 0.07;
+    hold += (targetHold - hold) * 0.05;
     gl.uniform1f(uTime, seconds);
     gl.uniform2f(uRes, canvas.width, canvas.height);
+    gl.uniform2f(uPointer, eased.x, eased.y);
+    gl.uniform1f(uHold, hold);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 

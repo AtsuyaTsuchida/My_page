@@ -170,12 +170,14 @@ img {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: linear-gradient(
-    100deg,
-    rgba(10, 10, 11, 0.9) 0%,
-    rgba(10, 10, 11, 0.55) 22%,
-    rgba(10, 10, 11, 0) 48%
-  );
+  background:
+    linear-gradient(to top, rgba(10, 10, 11, 0.8) 0%, rgba(10, 10, 11, 0) 20%),
+    linear-gradient(
+      100deg,
+      rgba(10, 10, 11, 0.9) 0%,
+      rgba(10, 10, 11, 0.55) 22%,
+      rgba(10, 10, 11, 0) 48%
+    );
 }
 
 @media (max-width: 760px) {
@@ -213,6 +215,14 @@ img {
 .landing-nav a,
 .home footer {
   text-shadow: 0 1px 20px rgba(10, 10, 11, 0.6);
+}
+
+.home footer {
+  color: rgba(244, 244, 242, 0.62);
+}
+
+.home footer a {
+  color: rgba(244, 244, 242, 0.86);
 }
 
 .landing h1 {
