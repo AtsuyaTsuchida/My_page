@@ -165,28 +165,31 @@ function initCurlBackground() {
       vec2 q = uv * 1.35;
       float paint = 0.0;
       float wsum = 0.0;
-      for (int i = 0; i < 5; i++) {
-        vec2 v = curl(q * 0.9 + vec2(t, -t * 0.6));
-        q -= v * 0.035;
-        float w = 1.0 - float(i) * 0.16;
-        paint += fbm(q * 1.7 + vec2(0.0, t * 0.8)) * w;
+      for (int i = 0; i < 6; i++) {
+        vec2 v = curl(q * 1.5 + vec2(t, -t * 0.6));
+        q -= v * 0.055;
+        float w = 1.0 - float(i) * 0.13;
+        paint += fbm(q * 2.7 + vec2(0.0, t * 0.8)) * w;
         wsum += w;
       }
       paint /= wsum;
 
-      float veil = smoothstep(0.15, 0.90, paint);
-      float edge = smoothstep(0.32, 0.72, paint);
+      // 濃度差を強めに刻んで、筆の跡がはっきり分かれて見えるようにする
+      float wash = smoothstep(0.10, 0.62, paint);
+      float edge = smoothstep(0.38, 0.66, paint);
+      float rim  = smoothstep(0.52, 0.60, paint) * (1.0 - smoothstep(0.60, 0.72, paint));
 
       vec3 base = vec3(0.039, 0.039, 0.043);
-      vec3 cool = vec3(0.100, 0.115, 0.145);
-      vec3 warm = vec3(0.260, 0.170, 0.085);
+      vec3 cool = vec3(0.150, 0.170, 0.215);
+      vec3 warm = vec3(0.470, 0.300, 0.140);
 
       vec3 col = base;
-      col = mix(col, cool, veil);
-      col = mix(col, warm, pow(edge, 1.8) * 0.70);
+      col = mix(col, cool, wash);
+      col = mix(col, warm, pow(edge, 1.4) * 0.85);
+      col += vec3(0.10, 0.075, 0.04) * rim;   // 筆の縁のハイライト
 
       // 周辺減光
-      float vig = clamp(1.0 - 0.45 * dot(uv, uv), 0.0, 1.0);
+      float vig = clamp(1.0 - 0.38 * dot(uv, uv), 0.0, 1.0);
       col *= vig;
 
       // 暗部の階調段差を隠す微細なノイズ

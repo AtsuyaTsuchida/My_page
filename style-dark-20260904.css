@@ -172,19 +172,19 @@ img {
   pointer-events: none;
   background: linear-gradient(
     100deg,
-    rgba(10, 10, 11, 0.88) 0%,
-    rgba(10, 10, 11, 0.62) 34%,
-    rgba(10, 10, 11, 0) 66%
+    rgba(10, 10, 11, 0.9) 0%,
+    rgba(10, 10, 11, 0.55) 22%,
+    rgba(10, 10, 11, 0) 48%
   );
 }
 
 @media (max-width: 760px) {
   .bg-veil {
     background: linear-gradient(
-      165deg,
-      rgba(10, 10, 11, 0.82) 0%,
-      rgba(10, 10, 11, 0.5) 52%,
-      rgba(10, 10, 11, 0.12) 100%
+      168deg,
+      rgba(10, 10, 11, 0.86) 0%,
+      rgba(10, 10, 11, 0.62) 38%,
+      rgba(10, 10, 11, 0.05) 82%
     );
   }
 }
@@ -208,6 +208,13 @@ img {
   padding: clamp(48px, 10vh, 120px) 0;
 }
 
+/* 背景の絵の上に乗るので、文字側にも軽い影で下地を作る */
+.landing h1,
+.landing-nav a,
+.home footer {
+  text-shadow: 0 1px 20px rgba(10, 10, 11, 0.6);
+}
+
 .landing h1 {
   margin: 0;
   font-weight: 200;
@@ -226,7 +233,7 @@ img {
 
 .landing-nav a {
   text-decoration: none;
-  color: rgba(244, 244, 242, 0.74);
+  color: rgba(244, 244, 242, 0.88);
   font-size: clamp(17px, 2.4vw, 28px);
   letter-spacing: -0.015em;
   transition: color 0.2s ease, padding-left 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
