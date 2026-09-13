@@ -488,11 +488,8 @@ main {
   color: var(--muted);
 }
 
-.work-lead {
-  font-size: clamp(15px, 1.6vw, 17px) !important;
-  line-height: 1.85 !important;
-  color: var(--ink) !important;
-}
+/* .work-lead はコンセプト冒頭の段落を示す目印。
+   見た目は他の段落と揃えるので、あえて独自の指定を持たせない。 */
 
 .work-list {
   margin: 0;
