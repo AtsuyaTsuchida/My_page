@@ -322,6 +322,36 @@ main {
 .about-lead {
   padding-bottom: clamp(22px, 3.6vh, 38px);
   border-bottom: 1px solid var(--hair);
+  /* 顔写真を左、氏名と紹介文を右に置く */
+  display: grid;
+  grid-template-columns: clamp(132px, 22%, 196px) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 36px);
+  align-items: start;
+}
+
+.about-portrait {
+  margin: 0;
+}
+
+.about-portrait img {
+  width: 100%;
+  /* width/height 属性があると高さがそのまま効いてしまうので打ち消す */
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* 狭い画面では縦に積み、写真は小さく回り込ませない */
+@media (max-width: 620px) {
+  .about-lead {
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 3vh, 24px);
+  }
+
+  .about-portrait {
+    width: min(48%, 168px);
+  }
 }
 
 .about-nameplate {
